@@ -1,201 +1,317 @@
 <template>
-<div class="admin">
-      <h1>The Admin Page!</h1>
-    <div class="heading">
-      <div class="circle">1</div>
-      <h2>Add an Item</h2>
+    <div class="admin">
+        <h1>Admin</h1>
+        <container class="container">
+            <div class="column">
+                <div class="heading">
+                    <div class="circle">1</div>
+                    <h2>Add an Item</h2>
+                </div>
+                <div class="add">
+                    <div class="form">
+                        <!-- <input v-model="author" placeholder="From"> -->
+                        <select v-model="author">
+                            <option disabled value="">From</option>
+                            <option v-for="c in characters" :key="c.id">{{c}}</option>
+
+                        </select>
+                        <p></p>
+                        <select v-model="receiver">
+                            <option disabled value="">To</option>
+                            <option v-for="c in characters" :key="c.id">{{c}}</option>
+
+                        </select>
+                        <p></p>
+                        
+                        <input v-model="dateSent" placeholder="5/6/730">
+                        <p></p>
+                        <textarea v-model="tag" placeholder="Letter summary..."></textarea>
+                        <p></p>
+                        <textarea v-model="text" placeholder="letter body..."></textarea>
+                        <p></p>
+                        
+                        <!-- <input type="file" name="doc" @change="fileChanged"> -->
+                        <button @click="upload">Upload</button>
+                    </div>
+                </div>
+                <div class="upload" v-if="addItem">
+                    <h2>{{addItem.author}}</h2>
+                    <h2>{{addItem.receiver}}</h2>
+                    <h2>{{addItem.dateSent}}</h2>
+                    <h2>{{addItem.tag}}</h2>
+                    <h2>{{addItem.text}}</h2>
+                </div>
+            </div>
+            <div class="column">
+                <div class="heading">
+                    <div class="circle">2</div>
+                    <h2>Edit/Delete an Item</h2>
+                </div>
+
+                <div class="edit">
+                    <div class="form">
+                        <input class="search" v-model="findauthor" placeholder="Search">
+                        <div class="suggestions" v-if="suggestions.length > 0">
+                            <div class="suggestion" v-for="s in suggestions" :key="s.id" @click="selectItem(s)">{{s.author}}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="actions editDelete" v-if="findItem">
+                        <button class="btnEdit" @click="deleteItem(findItem)">Delete</button>
+                        <button class="btnEdit" @click="editItem(findItem)">Edit</button>
+                    </div>
+
+                    <div class="upload" v-if="findItem">
+                        <select v-model="findItem.author">
+                            <option disabled value="">To</option>
+                            <option v-for="c in characters" :key="c.id">{{c}}</option>
+
+                        </select>
+                        <p></p>
+                        <select v-model="findItem.receiver">
+                            <option disabled value="">To</option>
+                            <option v-for="c in characters" :key="c.id">{{c}}</option>
+
+                        </select>
+                        <p></p>
+                        <input v-model="findItem.dateSent" placeholder="date">
+                        <p></p>
+                        <textarea v-model="findItem.tag" placeholder="Letter summary..."></textarea>
+                        <p></p>
+                        <p></p>
+                        <textarea v-model="findItem.text" placeholder="Letter body..."></textarea>
+                        <p></p>
+                        
+                    </div>
+                </div>
+            </div>
+        </container>
     </div>
-    <div class="add">
-      <div class="form">
-        <input v-model="title" placeholder="Title">
-        <p></p>
-        <input v-model="description" placeholder="description">
-        <p></p>
-        <input type="file" name="photo" @change="fileChanged">
-        <button @click="upload">Upload</button>
-      </div>
-      <div class="upload" v-if="addItem">
-        <h2>{{addItem.title}}</h2>
-        <h2>{{addItem.desscription}}</h2>
-        <img :src="addItem.path" />
-      </div>
-    </div>
-        <div class="heading">
-      <div class="circle">2</div>
-      <h2>Edit/Delete an Item</h2>
-    </div>
-    <div class="edit">
-      <div class="form">
-        <input v-model="findTitle" placeholder="Search">
-        <div class="suggestions" v-if="suggestions.length > 0">
-          <div class="suggestion" v-for="s in suggestions" :key="s.id" @click="selectItem(s)">{{s.title}}
-          </div>
-        </div>
-      </div>
-      <div class="upload" v-if="findItem">
-        <input v-model="findItem.title">
-        <input v-model="findItem.description">
-        <p></p>
-        <img :src="findItem.path" />
-      </div>
-      <div class="actions" v-if="findItem">
-        <button @click="deleteItem(findItem)">Delete</button>
-        <button @click="editItem(findItem)">Edit</button>
-      </div>
-    </div>
-</div>
 </template>
 
 <style scoped>
-.image h2 {
-  font-style: italic;
-  font-size: 1em;
-}
+    button {
+        padding: 10px;
+        background-color: #4C8577;
+        color: white;
+        width: 100px;
+    }
 
-.heading {
-  display: flex;
-  margin-bottom: 20px;
-  margin-top: 20px;
-}
+    container {
+        display: flex;
+        justify-content: flex-start;
+        align-items: stretch;
+        align-content: flex-start;
+    }
 
-.heading h2 {
-  margin-top: 8px;
-  margin-left: 10px;
-}
+    .editDelete {
+        display: relative;
+        text-align: center;
+    }
 
-.add,
-.edit {
-  display: flex;
-}
+    .btnEdit {
+        margin-bottom: 10px;
+        margin-top: 10px;
+        margin-right: 20px;
+        margin-left: -30px;
+        text-align: center;
+        width: 100px;
+    }
 
-.circle {
-  border-radius: 50%;
-  width: 18px;
-  height: 18px;
-  padding: 8px;
-  background: #333;
-  color: #fff;
-  text-align: center
-}
+    input,
+    textarea {
+        padding: 5px;
+    }
 
-/* Form */
-input,
-textarea,
-select,
-button {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 1em;
-}
+    textarea:focus, input:focus {
+        border-color: #4C8577
+    }
 
-.form {
-  margin-right: 50px;
-}
+    .column {
+        flex-basis: 40%;
+    }
 
-/* Uploaded images */
-.upload h2 {
-  margin: 0px;
-}
+    .image h2 {
+        font-style: italic;
+        font-size: 1em;
+    }
 
-.upload img {
-  max-width: 300px;
-}
+    .heading {
+        display: flex;
+        margin-bottom: 20px;
+        margin-top: 20px;
+    }
 
-/* Suggestions */
-.suggestions {
-  width: 200px;
-  border: 1px solid #ccc;
-}
+    .heading h2 {
+        margin-top: 8px;
+        margin-left: 10px;
+        font-size: 16px;
+    }
 
-.suggestion {
-  min-height: 20px;
-}
+    .add,
+    .edit {
+        display: flex;
+    }
 
-.suggestion:hover {
-  background-color: #5BDEFF;
-  color: #fff;
-}
+    .circle {
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        padding: 8px;
+        background: #4C8577;
+        color: #fff;
+        text-align: center
+    }
+
+    /* Form */
+    input,
+    textarea,
+    select,
+    button {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1em;
+    }
+
+    .form {
+        margin-right: 50px;
+    }
+
+    /* Uploaded images */
+    .upload h2 {
+        margin: 0px;
+    }
+
+    .upload img {
+        max-width: 300px;
+    }
+
+    /* Suggestions */
+    .suggestions {
+        width: 210px;
+        padding-top: 5px;
+        /* border: 1px solid #ccc; */
+    }
+
+    .search {
+        width: 200px;
+    }
+
+    .suggestion {
+        min-height: 20px;
+        padding-left: 5px;
+    }
+
+    .suggestion:hover {
+        background-color: #4C8577;
+        color: #fff;
+    }
 </style>
 
 <script>
-import axios from 'axios';
-export default {
-  name: 'Admin',
-    data() {
-    return {
-      title: "",
-      description: "",
-      file: null,
-      addItem: null,
-      items: [],
-      findTitle: "",
-      findItem: null,
-    }
-  },
-    computed: {
-    suggestions() {
-      let items = this.items.filter(item => item.title.toLowerCase().startsWith(this.findTitle.toLowerCase()));
-      return items.sort((a, b) => a.title > b.title);
-    }
-  },
-    created() {
-    this.getItems();
-  },
-    methods: {
-    fileChanged(event) {
-      this.file = event.target.files[0]
-    },
-        async upload() {
-      try {
-        const formData = new FormData();
-        formData.append('photo', this.file, this.file.name, this.file.description)
-        let r1 = await axios.post('/api/photos', formData);
-        let r2 = await axios.post('/api/items', {
-          title: this.title,
-          description: this.description,
-          path: r1.data.path
-        });
-        this.addItem = r2.data;
-      } catch (error) {
-        console.log(error);
-      }
-    },
-    async getItems() {
-  try {
-    let response = await axios.get("/api/items");
-    this.items = response.data;
-    return true;
-  } catch (error) {
-    console.log(error);
-  }
-},
-    selectItem(item) {
-      this.findTitle = "";
-      this.findItem = item;
-    },
-        async deleteItem(item) {
-      try {
-        await axios.delete("/api/items/" + item._id);
-        this.findItem = null;
-        this.getItems();
-        return true;
-      } catch (error) {
-        console.log(error);
-      }
-    },
-        async editItem(item) {
-      try {
-        await axios.put("/api/items/" + item._id, {
-          title: this.findItem.title,
-          description: this.findItem.description,
-        });
-        this.findItem = null;
-        this.getItems();
-        return true;
-      } catch (error) {
-        console.log(error);
-      }
-    },
-  }
-}
-</script>
+    import axios from 'axios';
+    export default {
+        name: 'Admin',
+        data() {
+            return {
+                author: "",
+                receiver: "",
+                dateSent: "",
+                tag: "",
+                text: "",
+                // id: "",
+                // file: null,
+                addItem: null,
+                items: [],
+                characters: ["Aenna", "Davian", "Sura", "Torin", "Vurmira", "Zephyra", "Niera", "Idin", "Drotan", "Skeigi", "Ravvi"],
+                findauthor: "",
+                findItem: null,
+            }
+        },
+        computed: {
+            suggestions() {
+                let items = this.items.filter(item => item.author.toLowerCase().startsWith(this.findauthor.toLowerCase()));
+                return items.sort((a, b) => a.author > b.author);
+            }
+        },
+        created() {
+            this.getItems();
+        },
+        methods: {
 
+            fileChanged(event) {
+                this.file = event.target.files[0]
+            },
+            async upload() {
+
+                try {
+                    const formData = new FormData();
+                    formData.append('author', this.author)
+                    formData.append('receiver', this.receiver)
+                    formData.append('dateSent', this.dateSent)
+                    formData.append('tag', this.tag)
+                    formData.append('text', this.text)
+                    
+
+                    let r1 = await axios.post('/api/items', {
+                        author: this.author,
+                        receiver: this.receiver,
+                        dateSent: this.dateSent,
+                        tag: this.tag,
+                        text: this.text,
+                        
+                    });
+                    this.addItem = r1.data;
+                } catch (error) {
+                    console.log(error);
+                }
+                this.dateSent = '';
+                this.tag = '';
+                this.receiver = '';
+                this.author = '';
+                this.text = '';
+                
+            },
+            async getItems() {
+                try {
+                    let response = await axios.get("/api/items");
+                    this.items = response.data;
+                    return true;
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+            selectItem(item) {
+                this.findauthor = "";
+                this.findItem = item;
+            },
+            async deleteItem(item) {
+                try {
+                    await axios.delete("/api/items/" + item._id);
+                    this.findItem = null;
+                    this.getItems();
+                    return true;
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+            async editItem(item) {
+                try {
+                    await axios.put("/api/items/" + item._id, {
+                        author: this.findItem.author,
+                        receiver: this.findItem.receiver,
+                        dateSent: this.findItem.dateSent,
+                        tag: this.findItem.tag,
+                        text: this.findItem.text,
+                        
+                    });
+                    this.findItem = null;
+                    this.getItems();
+                    return true;
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+        }
+    }
+</script>

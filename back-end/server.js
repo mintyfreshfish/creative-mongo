@@ -11,13 +11,14 @@ app.use(bodyParser.urlencoded({
 const mongoose = require('mongoose');
 
 // connect to the database
-mongoose.connect('mongodb://localhost:27017/museum', {
+mongoose.connect('mongodb://localhost:27017/storyLetters', {
   useUnifiedTopology: true,
   useNewUrlParser: true
 });
 
 // Configure multer so that it will upload to '../front-end/public/images'
-const multer = require('multer')
+const multer = require('multer');
+const { text } = require('express');
 const upload = multer({
   dest: '../front-end/public/images/',
   limits: {
@@ -25,34 +26,27 @@ const upload = multer({
   }
 });
 
-// Create a scheme for items in the museum: a title and a path to an image.
+// Create a scheme for items in the museum: a author, receiver, date, tag, p).
 const itemSchema = new mongoose.Schema({
-  title: String,
-  description: String,
-  path: String,
+  author: String,
+  receiver: String,
+  dateSent: Date,
+  tag: String,
+  text: String,
 });
 
 // Create a model for items in the museum.
 const Item = mongoose.model('Item', itemSchema);
 
-// Upload a photo. Uses the multer middleware for the upload and then returns
-// the path where the photo is stored in the file system.
-app.post('/api/photos', upload.single('photo'), async (req, res) => {
-  // Just a safety check
-  if (!req.file) {
-    return res.sendStatus(400);
-  }
-  res.send({
-    path: "/images/" + req.file.filename
-  });
-});
-
-// Create a new item in the museum: takes a title and a path to an image.
+// Create a new item in the museum: a author, receiver, date, tag, p1
 app.post('/api/items', async (req, res) => {
   const item = new Item({
-    title: req.body.title,
-    description: req.body.description,
-    path: req.body.path,
+    author: req.body.author,
+    receiver: req.body.receiver,
+    dateSent: req.body.dateSent,
+    tag: req.body.tag,
+    text: req.body.text,
+    // letID: makeID(req.body.author, req.body.receiver, p1
   });
   try {
     await item.save();
@@ -87,8 +81,11 @@ app.delete('/api/items/:id', async(req, res) => {
 app.put('/api/items/:id', async(req, res) => {
   try {
     let item = await Item.findOne({_id: req.params.id});
-    item.title = req.body.title;
-    item.description = req.body.description;
+    item.author = req.body.author;
+    item.receiver = req.body.receiver;
+    item.dateSent = req.body.dateSent;
+    item.tag = req.body.tag;
+    item.text = req.body.text;
     await item.save();
     res.send(item);
   } catch (error) {
@@ -98,4 +95,4 @@ app.put('/api/items/:id', async(req, res) => {
 })
 
 
-app.listen(3000, () => console.log('Server listening on port 3000!'));
+app.listen(3001, () => console.log('Server listening on port 3001!'));

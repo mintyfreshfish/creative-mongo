@@ -2,8 +2,11 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Admin from '../views/Admin.vue'
+import Timeline from '../views/Timeline.vue'
+import VueGoogleCharts from 'vue-google-charts'
 
 Vue.use(VueRouter)
+Vue.use(VueGoogleCharts)
 
 const routes = [{
     path: '/',
@@ -14,6 +17,11 @@ const routes = [{
     path: '/admin',
     name: 'admin',
     component: Admin
+  },
+  {
+    path: '/timeline',
+    name: 'timeline',
+    component: Timeline
   }
 ]
 

@@ -1,0 +1,20 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "..\\museum-objects"
+		},
+		{
+			"path": "..\\VueNodeMongoPoki"
+		},
+		{
+			"path": "..\\author-website\\in_development"
+		},
+		{
+			"path": "..\\vue-xkcd-browser"
+		}
+	],
+	"settings": {}
+}
