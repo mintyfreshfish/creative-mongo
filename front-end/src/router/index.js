@@ -5,7 +5,6 @@ import Admin from '../views/Admin.vue'
 import Timeline from '../views/Timeline.vue'
 
 Vue.use(VueRouter)
-Vue.use(VueGoogleCharts)
 
 const routes = [{
     path: '/',
