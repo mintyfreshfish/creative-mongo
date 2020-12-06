@@ -3,7 +3,6 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Admin from '../views/Admin.vue'
 import Timeline from '../views/Timeline.vue'
-import VueGoogleCharts from 'vue-google-charts'
 
 Vue.use(VueRouter)
 Vue.use(VueGoogleCharts)
